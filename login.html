@@ -11,12 +11,13 @@
             const username = document.querySelector('input[type="text"]').value;
             const password = document.querySelector('input[type="password"]').value;
 
-            if (username === "" || password === "") {
-                alert("Please enter both username and password.");
-                event.preventDefault();
-            } else {
+            if (username === "maheshch1094@gmail.com" && password === "1234560") {
                 event.preventDefault();
                 window.location.href = "home.html";
+                event.preventDefault();
+            } else {
+                alert("You Have entered your username or password incorrect.");
+                event.preventDefault();
             }
         }
     </script>

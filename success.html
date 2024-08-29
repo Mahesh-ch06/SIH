@@ -25,8 +25,8 @@
     <main class="main-content">
         <aside class="sidebar">
             <div class="profile">
-                <img src="https://onedrive.live.com/embed?resid=771D3B3169BA2924%21713&authkey=%21ABYFdYMJDfuCvrI&width=800&height=800" alt="Profile Picture">
-                <h3>Harsh</h3>
+                <img src="Screenshot 2024-08-26 121820.png" alt="Profile Picture">
+                <h3>Mahesh</h3>
                 <p>Class of 2027</p>
             </div>
             <nav class="menu">
@@ -45,6 +45,15 @@
             <article class="card">
                 <h2>Success Story Tracking</h2>
                 <p>Share and track the success stories of our alumni community. Submit your achievements or read about others here.</p>
+                <form id="story-form">
+                    <input type="text" id="title" placeholder="Title" required>
+                    <textarea id="description" placeholder="Description" required></textarea>
+                    <button type="submit">Submit Story</button>
+                </form>
+                <div id="stories">
+                    <h3>Success Stories</h3>
+                    <ul id="stories-list"></ul>
+                </div>
             </article>
         </section>
     </main>
@@ -54,9 +63,63 @@
     </footer>
 
     <script>
+        // Toggle menu visibility
         document.getElementById('menu-toggle').addEventListener('click', function() {
             document.getElementById('menu').classList.toggle('active');
         });
+
+        // Handle form submission
+        document.getElementById('story-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const title = document.getElementById('title').value;
+            const description = document.getElementById('description').value;
+
+            try {
+                const response = await fetch('http://localhost:5000/api/stories', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ title, description })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const newStory = await response.json();
+                document.getElementById('title').value = '';
+                document.getElementById('description').value = '';
+                loadStories();
+            } catch (err) {
+                console.error('Error submitting story:', err);
+            }
+        });
+
+        // Load stories from the backend
+        async function loadStories() {
+            try {
+                const response = await fetch('http://localhost:5000/api/stories');
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const stories = await response.json();
+                const storiesList = document.getElementById('stories-list');
+                storiesList.innerHTML = '';
+                stories.forEach(story => {
+                    const li = document.createElement('li');
+                    li.textContent = `${story.title}: ${story.description}`;
+                    storiesList.appendChild(li);
+                });
+            } catch (err) {
+                console.error('Error loading stories:', err);
+            }
+        }
+
+        // Load stories on page load
+        loadStories();
     </script>
 </body>
 </html>
