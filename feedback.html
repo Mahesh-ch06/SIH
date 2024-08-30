@@ -6,6 +6,12 @@
     <title>Alumni Association - Feedback and Surveys</title>
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+    <script>
+        (function() {
+            emailjs.init(''); // Replace 'your_user_id' with your actual user ID from EmailJS
+        })();
+    </script>
 </head>
 <body>
     <header class="navbar">
@@ -46,7 +52,7 @@
                 <h2>Feedback and Surveys</h2>
                 <p>Your feedback helps us improve. Participate in surveys and share your thoughts with us.</p>
                 <!-- Feedback form -->
-                <form>
+                <form id="feedbackForm">
                     <label for="name">Name:</label>
                     <input type="text" id="name" name="name" required>
                     <label for="feedback">Your Feedback:</label>
@@ -64,6 +70,26 @@
     <script>
         document.getElementById('menu-toggle').addEventListener('click', function() {
             document.getElementById('menu').classList.toggle('active');
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('feedbackForm').addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent the default form submission
+
+                const templateParams = {
+                    name: document.getElementById('name').value,
+                    feedback: document.getElementById('feedback').value,
+                };
+
+                emailjs.send('service_7nvdplr', 'template_uz5v4ok', templateParams)
+                    .then(function(response) {
+                        console.log('SUCCESS!', response.status, response.text);
+                        alert('Feedback submitted successfully!');
+                    }, function(error) {
+                        console.error('FAILED...', error);
+                        alert('There was an issue submitting your feedback. Please try again later.');
+                    });
+            });
         });
     </script>
 </body>
